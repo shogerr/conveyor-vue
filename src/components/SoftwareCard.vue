@@ -44,10 +44,13 @@ export default {
       console.log(component)
       this.$emit("input", component);
     },
-    drop (id) {
+    removeit(i) {
+      this.$emit("removeit");
+    },
+    drop(id) {
       console.log(id)
-      axios
-        .delete("http://localhost:8090/v1/software/" + id)
+      axios.delete("http://localhost:8090/v1/software/" + id);
+      this.$emit("removeit");
     }
   },
   created() {

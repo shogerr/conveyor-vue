@@ -1,10 +1,10 @@
 <template>
   <v-item-group>
-    <v-row v-if="softwareList && softwareList.length">
-      <v-col v-for="software in softwareList" v-bind:key="software.index">
-        <SoftwareCard :data="{ software }" />
-      </v-col>
-    </v-row>
+    <SoftwareCard v-for="software in softwareList"
+      :key="software.index"
+      :data="{ software }"
+      @removeit="removeit('extra', software._id)"
+    />
   </v-item-group>
 </template>
 
@@ -20,6 +20,11 @@ export default {
   }),
   components: {
     SoftwareCard
+  },
+  methods: {
+    removeit(extra, id) {
+      //this.softwareList = this.softwareList.filter(s => s._id !== id);
+    }
   },
   created() {
     axios
