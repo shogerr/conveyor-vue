@@ -1,29 +1,63 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <div class="d-flex align-center">
+        <v-btn icon>
+          <v-icon>mdi-robot-industrial</v-icon>
+        </v-btn>
+
+        <v-toolbar-title>Conveyor</v-toolbar-title>
+      </div>
+      <v-spacer></v-spacer>
+
+      <!--
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        text
+      >
+        <span class="mr-2">Latest Release</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+      -->
+    </v-app-bar>
+
+    <v-content>
+      <SoftwareToolbar />
+      <app-view>
+        <v-container fluid>
+          <component v-bind:is="component" />
+        </v-container>
+      </app-view>
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+import Vue from "vue";
+import SoftwareCard from "./components/SoftwareCard.vue";
+import SoftwareList from "./components/SoftwareList.vue";
+import SoftwareToolbar from "./components/SoftwareToolbar.vue";
+import AppView from "./components/AppView.vue";
 
-@Component({
+export default Vue.extend({
+  name: "App",
+
   components: {
-    HelloWorld
+    SoftwareCard,
+    SoftwareList,
+    SoftwareToolbar,
+    AppView
+  },
+  data: () => ({
+    component: "SoftwareList"
+  }),
+  methods: {
+    toggle() {
+      if (this.component === "SoftwareList") {
+        this.component = "SoftwareCard";
+      }
+    }
   }
-})
-export default class App extends Vue {}
+});
 </script>
-
-<style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
