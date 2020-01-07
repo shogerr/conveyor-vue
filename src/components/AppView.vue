@@ -41,6 +41,7 @@ export default {
     overlay_() {
       //this.overlay = !this.overlay;
       this.dialog = !this.dialog;
+      this.$forceUpdate();
     }
   },
   watch: {

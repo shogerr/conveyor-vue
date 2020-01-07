@@ -13,12 +13,24 @@
         <v-card-text>
           <v-container>
             <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  label="Product Name*"
+                  v-model="name"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-autocomplete
+                  :items="['optimizer', 'system-manager', 'grader', 'driver']"
+                  v-model="type"
+                  label="Category"
+                  multiple
+                ></v-autocomplete>
+              </v-col>
               <!--
               <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Legal first name*" required></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Legal middle name" hint="example of helper text only on focus"></v-text-field>
+                <v-text-field label="Type" hint="example of helper text only on focus"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
@@ -55,14 +67,18 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('overlay')">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="$emit('overlay')">Save</v-btn>
+          <v-btn color="blue darken-1" text @click="$emit('overlay')"
+            >Close</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="submit">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   props: {
     dialog: {
@@ -70,9 +86,24 @@ export default {
       default: false
     }
   },
-  data: () => ({}),
+  data: () => ({
+    name: "",
+    type: []
+  }),
+  methods: {
+    submit() {
+      console.log(this)
+      axios.post("http://localhost:8090/v1/software", {
+        name: this.name,
+        type: this.type
+      });
+      this.$emit('overlay');
+    }
+  },
   watch: {
-    dialog() { console.log("watcher: " + this.dialog); }
+    dialog() {
+      console.log("watcher: " + this.dialog);
     }
   }
+};
 </script>
