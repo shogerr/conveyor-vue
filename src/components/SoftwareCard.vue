@@ -13,7 +13,6 @@
 
       <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
     </v-list-item>
-
     <v-card-actions>
       <v-btn v-on:click="updateValue(software._id)">
         Open
@@ -31,7 +30,7 @@ import axios from "axios";
 export default {
   name: "SoftwareCard",
   data: () => ({
-    id: "5e116c7b7c38dc44607b6b1b",
+    id: String,
     software: [Object],
     errors: []
   }),
@@ -40,26 +39,19 @@ export default {
     data: [Object]
   },
   methods: {
-    updateValue: function (component) {
-      console.log(component)
+    updateValue: function(component) {
       this.$emit("input", component);
     },
-    removeit(i) {
-      this.$emit("removeit");
-    },
     drop(id) {
-      console.log(id)
       axios.delete("http://localhost:8090/v1/software/" + id);
-      this.$emit("removeit");
+      this.$emit("removeSoftware");
     }
   },
   created() {
-    console.log(this)
-
-    if (typeof this.data.software !== 'undefined') {
+    if (typeof this.data.software !== "undefined") {
       this.software = this.data.software;
     } else {
-      if (typeof this.data.id !== 'undefined') {
+      if (typeof this.data.id !== "undefined") {
         this.id = this.data.id;
       }
 

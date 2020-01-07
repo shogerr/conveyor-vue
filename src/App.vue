@@ -23,11 +23,8 @@
     </v-app-bar>
 
     <v-content>
-      <SoftwareToolbar />
       <app-view>
-        <v-container fluid>
-          <component v-bind:is="component" />
-        </v-container>
+        <component v-bind:is="component" />
       </app-view>
     </v-content>
   </v-app>

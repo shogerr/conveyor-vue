@@ -1,11 +1,12 @@
 <template>
-  <v-item-group>
-    <SoftwareCard v-for="software in softwareList"
-      :key="software.index"
+  <div>
+    <SoftwareCard
+      v-for="(software, index) in softwareList"
+      :key="software._id"
       :data="{ software }"
-      @removeit="removeit('extra', software._id)"
+      @removeSoftware="removeSoftware(index)"
     />
-  </v-item-group>
+  </div>
 </template>
 
 <script>
@@ -22,8 +23,9 @@ export default {
     SoftwareCard
   },
   methods: {
-    removeit(extra, id) {
+    removeSoftware(id) {
       //this.softwareList = this.softwareList.filter(s => s._id !== id);
+      this.$delete(this.softwareList, id);
     }
   },
   created() {
