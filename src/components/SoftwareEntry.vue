@@ -92,12 +92,11 @@ export default {
   }),
   methods: {
     submit() {
-      console.log(this)
       axios.post("http://localhost:8090/v1/software", {
         name: this.name,
         type: this.type
       });
-      this.$emit('overlay');
+      this.$emit("overlay");
     }
   },
   watch: {

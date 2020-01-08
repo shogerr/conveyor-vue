@@ -1,10 +1,11 @@
 <template>
   <div>
-    <SoftwareCard
-      v-for="(software, index) in softwareList"
-      :key="software._id"
-      :data="{ software }"
-      @removeSoftware="removeSoftware(index)"
+    <software-card
+      v-for="(item, index) in list"
+      :key="item._id"
+      :data="{ item }"
+      @removeItem="removeItem(index)"
+      @openItem="openItem(item._id)"
     />
   </div>
 </template>
@@ -15,28 +16,34 @@ import SoftwareCard from "./SoftwareCard";
 
 export default {
   name: "SoftwareList",
+  props: { url: String },
   data: () => ({
-    softwareList: [],
+    list: [],
     errors: []
   }),
   components: {
     SoftwareCard
   },
   methods: {
-    removeSoftware(id) {
-      //this.softwareList = this.softwareList.filter(s => s._id !== id);
-      this.$delete(this.softwareList, id);
+    removeItem(id) {
+      this.$delete(this.list, id);
+    },
+    openItem(id) {
+      this.$emit("openItem", id)
+    },
+    get(url) {
+      axios
+        .get(url)
+        .then(response => {
+          this.list = response.data;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
     }
   },
   created() {
-    axios
-      .get("http://localhost:8090/v1/software")
-      .then(response => {
-        this.softwareList = response.data;
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
+    this.get(this.url);
   }
 };
 </script>

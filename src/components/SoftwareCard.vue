@@ -2,22 +2,22 @@
   <v-card class="mx-auto" max-width="344" outlined>
     <v-list-item three-line>
       <v-list-item-content>
-        <div class="overline mb-4">{{ software.type }}</div>
+        <div class="overline mb-4">{{ item.type }}</div>
         <v-list-item-title class="headline mb-1">{{
-          software.name
+          item.name
         }}</v-list-item-title>
         <v-list-item-subtitle>
-          {{ software._id }}
+          {{ item._id }}
         </v-list-item-subtitle>
       </v-list-item-content>
 
       <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
     </v-list-item>
     <v-card-actions>
-      <v-btn v-on:click="updateValue(software._id)">
+      <v-btn v-on:click="open(item._id)">
         Open
       </v-btn>
-      <v-btn icon v-on:click="drop(software._id)">
+      <v-btn icon v-on:click="drop(item._id)">
         <v-icon>mdi-minus-circle</v-icon>
       </v-btn>
     </v-card-actions>
@@ -30,39 +30,47 @@ import axios from "axios";
 export default {
   name: "SoftwareCard",
   data: () => ({
-    id: String,
-    software: [Object],
+    item: [{}],
     errors: []
   }),
   props: {
-    component: [String],
+    id: String,
+    url: String,
     data: [Object]
   },
   methods: {
-    updateValue: function(component) {
-      this.$emit("input", component);
+    open(value) {
+      console.log(value)
+      this.$emit("openItem", value);
     },
     drop(id) {
-      axios.delete("http://localhost:8090/v1/software/" + id);
-      this.$emit("removeSoftware");
-    }
-  },
-  created() {
-    if (typeof this.data.software !== "undefined") {
-      this.software = this.data.software;
-    } else {
-      if (typeof this.data.id !== "undefined") {
-        this.id = this.data.id;
-      }
-
+      axios.delete(this.url + "/" + id);
+      this.$emit("removeItem");
+    },
+    get() {
       axios
-        .get("http://localhost:8090/v1/software/" + this.id)
+        .get(this.url + "/" + this.id)
         .then(response => {
-          this.software = response.data;
+          this.item = response.data;
         })
         .catch(e => {
           this.errors.push(e);
         });
+    }
+  },
+  created() {
+    if (
+      typeof this.data !== "undefined" &&
+      typeof this.data.item !== "undefined"
+    ) {
+      this.item = this.data.item;
+    } else {
+      this.get();
+    }
+  },
+  watch: {
+    id() {
+      this.get();
     }
   }
 };

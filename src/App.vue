@@ -24,7 +24,7 @@
 
     <v-content>
       <app-view>
-        <component v-bind:is="component" />
+        <!--component v-bind:is="component" /-->
       </app-view>
     </v-content>
   </v-app>
@@ -32,29 +32,17 @@
 
 <script lang="ts">
 import Vue from "vue";
-import SoftwareCard from "./components/SoftwareCard.vue";
-import SoftwareList from "./components/SoftwareList.vue";
-import SoftwareToolbar from "./components/SoftwareToolbar.vue";
 import AppView from "./components/AppView.vue";
 
 export default Vue.extend({
   name: "App",
 
   components: {
-    SoftwareCard,
-    SoftwareList,
-    SoftwareToolbar,
     AppView
   },
   data: () => ({
     component: "SoftwareList"
   }),
-  methods: {
-    toggle() {
-      if (this.component === "SoftwareList") {
-        this.component = "SoftwareCard";
-      }
-    }
-  }
+  methods: {}
 });
 </script>
