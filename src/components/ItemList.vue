@@ -1,16 +1,17 @@
 <template>
   <div class="d-flex flex-column">
-    <div class="" v-for="(item, index) in list" :key="item._id">
+    <div class="mt-4" v-for="(item, index) in list" :key="item._id">
       <item-card
         :data="{ item }"
         :selection="selection"
         :url="_url"
         :ref="'item' + item._id"
+        :breakout="options.breakout"
         @removeItem="removeItem(index)"
         @open-item="open"
-        @close-item="$emit('close-item', item, $refs)"
+        @close-item="close(item)"
       >
-        <v-card :ref="'editor' + item._id">
+        <v-card class="editor-pane" :ref="'editor' + item._id">
           <slot></slot>
         </v-card>
       </item-card>
@@ -28,6 +29,12 @@ export default Vue.extend({
   props: {
     url: String,
     selection: String,
+    options: {
+      type: Object,
+      default: () => ({
+        breakout: false
+      })
+    }
   },
   data: () => ({
     tag: "",
@@ -44,9 +51,12 @@ export default Vue.extend({
       this.$delete(this.list, id);
     },
     open(id: any, ref: any) {
-      console.log("Refs in ItemList")
-      console.log(this.$refs)
       this.$emit("open-item", id, this.$refs);
+    },
+    close(item: any) {
+      (this.$refs["editor" + item._id] as Array<any>)[0].$el.innerHTML = "";
+      this.$forceUpdate();
+      this.$emit("close-item", item, this.$refs);
     },
     get(url: string) {
       axios
@@ -60,18 +70,14 @@ export default Vue.extend({
     }
   },
   created() {
-    console.log("url: " + this.url)
     this._url = this.url + this.selection;
     this.get(this._url);
   },
   watch: {
     url() {
-      console.log("url changed")
       this.get(this.url);
     },
     selection() {
-      console.log("selection changed")
-      console.log(this.url);
       this.get(this.url + this.selection);
     }
   }

@@ -8,16 +8,13 @@
       -->
       <v-card>
         <v-card-title>
-          <span class="headline">Add Software</span>
+          <span class="headline">Detail</span>
         </v-card-title>
-        <v-card-text>
-          <v-container>
-            <div id="editor">blah</div>
-          </v-container>
-        </v-card-text>
+        <v-card-text> </v-card-text>
+        <v-container ref="editor"> </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('overlay')"
+          <v-btn color="blue darken-1" text @click="$emit('close-editor')"
             >Close</v-btn
           >
           <v-btn color="blue darken-1" text @click="submit">Save</v-btn>
@@ -26,14 +23,22 @@
     </v-dialog>
   </v-row>
 </template>
-<script>
+<script lang="ts">
+import Vue from "vue";
 import axios from "axios";
 
-export default {
+// @ts-ignore
+import * as monaco from "monaco-editor";
+
+export default Vue.extend({
   props: {
     dialog: {
       type: Boolean,
       default: true
+    },
+    content: {
+      type: String,
+      default: "null"
     }
   },
   data: () => ({
@@ -47,12 +52,20 @@ export default {
         type: this.type
       });
       this.$emit("overlay");
+    },
+    newEditor() {
+      // @ts-ignore
+      monaco.editor.create(this.$refs.editor as HTMLElement, {
+        value: this.content,
+        language: "javascript"
+      });
     }
   },
   watch: {
     dialog() {
-      console.log("watcher: " + this.dialog);
+      console.log(this.$refs[0]);
+      setTimeout(this.newEditor, 300);
     }
   }
-};
+});
 </script>

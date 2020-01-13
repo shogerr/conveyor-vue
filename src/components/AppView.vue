@@ -2,40 +2,29 @@
   <v-container>
     <app-toolbar
       class="mb-12"
-      @overlay="overlay_"
+      @overlay="dialog = !dialog"
       @select-view="selectView"
       @select="select"
     >
-      <v-btn fab large dark absolute bottom right @click="overlay_()">
+      <v-btn fab large dark absolute bottom right @click="dialog = !dialog">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </app-toolbar>
 
-    <software-entry :dialog="dialog" @overlay="overlay_" />
-    <editor :dialog="editor" @overlay="overlay_" />
+    <software-entry :dialog="dialog" @overlay="dialog = !dialog" />
+
+    <editor
+      ref="editor"
+      :content="content"
+      :dialog="editor"
+      @close-editor="closeItem"
+    />
     <component
       :selection="selected"
       :url="url"
       v-bind:is="view"
       @open-item="openItem"
     />
-    <!--component
-      v-bind:is="view"
-      :url="url"
-    /-->
-    <!--
-    <v-overlay :absolute="false" :value="overlay">
-      <v-card>
-        <v-btn @click="overlay_()">
-          <v-icon>md-minus</v-icon>
-        </v-btn>
-      </v-card>
-    </v-overlay>
-    <v-container>
-      <software-card :url="url" :id="selection" />
-      <software-list :url="url" @openItem="openItem" />
-    </v-container>
-    -->
   </v-container>
 </template>
 
@@ -61,36 +50,27 @@ export default Vue.extend({
     url: "http://localhost:8090/v1/",
     view: "item-list",
     editor: false,
+    content: "some blank content",
     dialog: false,
     overlay: false
   }),
   methods: {
-    overlay_() {
-      //this.overlay = !this.overlay;
-      this.dialog = false;
+    closeItem() {
       this.editor = false;
+      //this.$refs.editor.$el.innerHTML = "";
     },
-    openItem(id: string) {
+    openItem(item: any) {
       this.editor = true;
-      this.selection = id;
+      this.content = item._id;
+      this.selection = item._id;
     },
     select(item: any) {
       this.selected = item;
       this.$forceUpdate();
-      console.log(item);
     },
     selectView(view: any) {
-      console.log(view);
       this.view = view;
       this.$forceUpdate();
-    }
-  },
-  watch: {
-    value() {
-      console.log("value change");
-    },
-    dialog() {
-      console.log("App watcher: " + this.dialog);
     }
   }
 });

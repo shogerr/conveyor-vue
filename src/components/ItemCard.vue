@@ -1,5 +1,5 @@
 <template>
-  <v-card max-height="640px">
+  <v-card>
     <div class="d-flex">
       <v-list-item three-line>
         <v-list-item-content>
@@ -22,11 +22,11 @@
               <v-icon v-else>mdi-wrench</v-icon>
             </v-btn>
           </template>
-          <v-btn v-on:click="open(item)" dark small>
-            Open
+          <v-btn v-if="!opened" v-on:click="open(item)" dark small>
+            open
           </v-btn>
-          <v-btn v-on:click="close(item)" dark small>
-            Close
+          <v-btn v-else v-on:click="close(item)" dark small>
+            close
           </v-btn>
           <v-btn icon v-on:click="drop(item._id)" dark fab small color="red">
             <v-icon>mdi-delete</v-icon>
@@ -42,6 +42,13 @@
       {{ item }}
     </v-card-text>
 
+    <template v-if="opened && breakout">
+      <v-toolbar>
+        <v-btn absolute right v-on:click="close(item)" dark small v-if="opened">
+          Close
+        </v-btn>
+      </v-toolbar>
+    </template>
     <slot></slot>
   </v-card>
 </template>
@@ -52,6 +59,15 @@ import axios from "axios";
 
 export default Vue.extend({
   name: "ItemCard",
+  props: {
+    breakout: {
+      type: Boolean,
+      default: false
+    },
+    id: String,
+    url: String,
+    data: [Object]
+  },
   data: () => ({
     item: [{}],
     fab: false,
@@ -59,17 +75,17 @@ export default Vue.extend({
     details: true,
     errors: [Object]
   }),
-  props: {
-    id: String,
-    url: String,
-    data: [Object]
-  },
   methods: {
     open(item: any) {
-      console.log(this.$refs)
-      this.$emit("open-item", item, this.$refs);
+      if (!this.opened) {
+        console.log(this.$refs);
+        this.opened = true;
+        this.$forceUpdate();
+        this.$emit("open-item", item, this.$refs);
+      }
     },
     close(item: any) {
+      this.opened = false;
       this.$emit("close-item", item, this.$refs);
     },
     drop(id: string) {
