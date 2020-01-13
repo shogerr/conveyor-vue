@@ -1,3 +1,7 @@
+const monacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 module.exports = {
-  transpileDependencies: ["vuetify"]
+  transpileDependencies: ["vuetify"],
+  configureWebpack: {
+    plugins: [new monacoWebpackPlugin()]
+  }
 };

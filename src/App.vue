@@ -23,9 +23,7 @@
     </v-app-bar>
 
     <v-content>
-      <app-view>
-        <!--component v-bind:is="component" /-->
-      </app-view>
+      <app-view> </app-view>
     </v-content>
   </v-app>
 </template>
@@ -40,9 +38,7 @@ export default Vue.extend({
   components: {
     AppView
   },
-  data: () => ({
-    component: "SoftwareList"
-  }),
+  data: () => ({}),
   methods: {}
 });
 </script>

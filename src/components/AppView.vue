@@ -1,7 +1,29 @@
 <template>
-  <v-card>
-    <software-toolbar @overlay="overlay_" />
+  <v-container>
+    <app-toolbar
+      class="mb-12"
+      @overlay="overlay_"
+      @select-view="selectView"
+      @select="select"
+    >
+      <v-btn fab large dark absolute bottom right @click="overlay_()">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </app-toolbar>
+
     <software-entry :dialog="dialog" @overlay="overlay_" />
+    <editor :dialog="editor" @overlay="overlay_" />
+    <component
+      :selection="selected"
+      :url="url"
+      v-bind:is="view"
+      @open-item="openItem"
+    />
+    <!--component
+      v-bind:is="view"
+      :url="url"
+    /-->
+    <!--
     <v-overlay :absolute="false" :value="overlay">
       <v-card>
         <v-btn @click="overlay_()">
@@ -13,47 +35,63 @@
       <software-card :url="url" :id="selection" />
       <software-list :url="url" @openItem="openItem" />
     </v-container>
-  </v-card>
+    -->
+  </v-container>
 </template>
 
-<script>
-import SoftwareCard from "./SoftwareCard";
-import SoftwareList from "./SoftwareList.vue";
-import SoftwareToolbar from "./SoftwareToolbar";
-import SoftwareEntry from "./SoftwareEntry";
+<script lang="ts">
+import Vue from "vue";
+import AppToolbar from "./AppToolbar.vue";
+import SoftwareEntry from "./SoftwareEntry.vue";
+import ScriptsView from "./ScriptsView.vue";
+import ItemList from "./ItemList.vue";
+import Editor from "./Editor.vue";
 
-export default {
+export default Vue.extend({
   components: {
-    SoftwareCard,
-    SoftwareToolbar,
-    SoftwareList,
-    SoftwareEntry
+    AppToolbar,
+    SoftwareEntry,
+    ScriptsView,
+    ItemList,
+    Editor
   },
   data: () => ({
-    selection: "5e15683f86004d68588d594f",
-    url: "http://localhost:8090/v1/software",
+    selected: "software",
+    selection: "",
+    url: "http://localhost:8090/v1/",
+    view: "item-list",
+    editor: false,
     dialog: false,
     overlay: false
   }),
   methods: {
     overlay_() {
       //this.overlay = !this.overlay;
-      this.dialog = !this.dialog;
+      this.dialog = false;
+      this.editor = false;
     },
-    openItem(id) {
+    openItem(id: string) {
+      this.editor = true;
       this.selection = id;
+    },
+    select(item: any) {
+      this.selected = item;
+      this.$forceUpdate();
+      console.log(item);
+    },
+    selectView(view: any) {
+      console.log(view);
+      this.view = view;
+      this.$forceUpdate();
     }
   },
   watch: {
     value() {
       console.log("value change");
     },
-    component() {
-      console.log("component change: " + this.component);
-    },
     dialog() {
       console.log("App watcher: " + this.dialog);
     }
   }
-}
+});
 </script>
